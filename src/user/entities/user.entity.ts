@@ -7,13 +7,13 @@ export class UserEntity {
 
   @Column({ length: 20, unique: true })
   username: string;
-  @Column({ length: 20 })
+  @Column({ length: 200 })
   password: string;
   // 年龄
-  @Column()
+  @Column({ default: 18})
   age: number;
   // 性别
-  @Column({ length: 20 })
+  @Column({ length: 20, default: "男" })
   sex: string;
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   create_time: Date;
