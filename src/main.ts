@@ -8,6 +8,7 @@ import { TransformInterceptor } from "./common/interceptor/transform/transform.i
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // 配置和注册 Swagger
   const config = new DocumentBuilder()
     .setTitle("Cats example")
     .setDescription("The cats API description")
@@ -16,6 +17,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
+  
   // 注册全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());
   // 注册全局拦截器
