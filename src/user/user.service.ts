@@ -1,51 +1,28 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserEntity } from "./entities/user.entity";
 
-const userList = [
-  {
-    id: '1',
-    name: "张三",
-    age: 18,
-    sex: "男",
-  },
-  {
-    id: '2',
-    name: "李四",
-    age: 19,
-    sex: "女",
-  },
-  {
-    id: '3',
-    name: "王五",
-    age: 20,
-    sex: "女",
-  },
-  {
-    id: '4',
-    name: "赵六",
-    age: 21,
-    sex: "保密",
-  },
-];
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    const newUser = {
-      ...createUserDto,
-      id: new Date().getTime() + '',
-    }
-    userList.push(newUser);
-    return userList;
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>
+  ) {}
+  async create(createUserDto: CreateUserDto) {
+    this.userRepository.save(createUserDto);
+    return await this.userRepository.save(createUserDto);
   }
 
-  findAll() {
-    return userList;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
-  findOne(id: string) {
-    const user = userList.find((item) => item.id == id);
+  async findOne(id: number) {
+    const user = await this.userRepository.findOne({ where: { id} });
     if (user) {
       return user;
     } else {
@@ -53,23 +30,24 @@ export class UserService {
     }
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const user = userList.find((item) => item.id == id);
-    if (user) {
-      Object.assign(user, updateUserDto);
-      return user;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    console.log('[ updateUserDto ] >', updateUserDto)
+    const qb = await this.userRepository.createQueryBuilder();
+    const res =  await qb.update().set(updateUserDto).where({ id }).execute();
+    const { affected } = res;
+    if (affected > 0) {
+      return await this.userRepository.findOne({ where: { id } });
     } else {
       return null;
     }
   }
 
-  remove(id: string) {
-    const index = userList.findIndex((item) => item.id == id);
-    if (index > -1) {
-      userList.splice(index, 1);
-      return id;
+  async remove(id: number) {
+    const { affected } = await this.userRepository.delete({ id });
+    if (affected > 0) {
+      return true;
     } else {
-      return null;
+      return false;
     }
   }
 }
