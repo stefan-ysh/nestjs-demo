@@ -83,6 +83,8 @@ export class AppService {
 }
 ```
 
+![module](https://docs.nestjs.com/assets/Modules_1.png)
+
 ## module
 
 > 模块，将多个业务模块进行整合，比如将 user 模块和 goods 模块整合到一起，形成一个模块。
