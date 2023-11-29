@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -13,8 +13,13 @@ export class UserService {
     private userRepository: Repository<UserEntity>
   ) {}
   async create(createUserDto: CreateUserDto) {
-    this.userRepository.save(createUserDto);
-    return await this.userRepository.save(createUserDto);
+    //  确定username为唯一的
+    const user = await this.userRepository.findOne({ where: { username: createUserDto.username} });
+    if (user) {
+      throw new HttpException('用户已存在', 400)
+    } else {
+      return await this.userRepository.save(createUserDto);
+    }
   }
 
   async findAll() {
