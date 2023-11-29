@@ -10,14 +10,14 @@ async function bootstrap() {
 
   // 配置和注册 Swagger
   const config = new DocumentBuilder()
-    .setTitle("Cats example")
-    .setDescription("The cats API description")
+    .setTitle("Nestjs learning example")
+    .setDescription("The nestjs API is used for learning nestjs")
     .setVersion("1.0")
-    .addTag("cats")
+    // .addTag("nestjs-demo")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
-  
+
   // 注册全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());
   // 注册全局拦截器

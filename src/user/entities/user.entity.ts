@@ -5,7 +5,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number; // 标记为主键，值自动生成
 
-  @Column({ length: 20 })
+  @Column({ length: 20, unique: true })
   username: string;
   @Column({ length: 20 })
   password: string;
