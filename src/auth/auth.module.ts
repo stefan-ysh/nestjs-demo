@@ -6,6 +6,7 @@ import { UserEntity } from "../user/entities/user.entity";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { jwtConstants } from "./constants";
+import JwtAuthStrategy from "./jwt-auth.strategy";
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { jwtConstants } from "./constants";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtAuthStrategy],
 })
 export class AuthModule {}
