@@ -19,16 +19,16 @@
    用来获取请求头中的参数，如：/user，@Headers() headers 中的 headers 就是整个请求头（对象），如果要直接读取 token，则使用 @Headers('token')，这样就可以直接获取到请求头中的 token 的值: xxxxxx
 
 ```ts
-import { Controller, Get, Headers, Query } from '@nestjs/common';
+import { Controller, Get, Headers, Query } from "@nestjs/common";
 
-import { AppService } from './app.service';
+import { AppService } from "./app.service";
 // 这句代码的意思是，当用户访问 http://localhost:3000/user 路径时，将请求交给 AppController 来处理
-@Controller('user')
+@Controller("user")
 export class AppController {
   constructor(private readonly appService: AppService) {}
   // 以下代码的意思是：讲请求的参数 id 交给 appService 的 findOneByQuery 方法来处理
   @Get()
-  findOneByQuery(@Query('id') id: string, @Headers() headers) {
+  findOneByQuery(@Query("id") id: string, @Headers() headers) {
     // @Query('id') id: string, @Headers() headers 这句代码是意思是：将请求的参数 id 赋值给 findOneByQuery 方法的的第一个参数(id)，将请求头赋值给 fineOneByQuery 方法第二个参数 (headers)
     return this.appService.findOneByQuery(id);
   }
@@ -40,32 +40,32 @@ export class AppController {
 > 业务层,在这里写一些与业务相关的逻辑。比如对数据库的 CRUD 就可以写到这里
 
 ```ts
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 const userList = [
   {
     id: 1,
-    name: '张三',
+    name: "张三",
     age: 18,
-    sex: '男',
+    sex: "男",
   },
   {
     id: 2,
-    name: '李四',
+    name: "李四",
     age: 19,
-    sex: '女',
+    sex: "女",
   },
   {
     id: 3,
-    name: '王五',
+    name: "王五",
     age: 20,
-    sex: '女',
+    sex: "女",
   },
   {
     id: 4,
-    name: '赵六',
+    name: "赵六",
     age: 21,
-    sex: '保密',
+    sex: "保密",
   },
 ];
 @Injectable()
@@ -77,7 +77,7 @@ export class AppService {
     if (user) {
       return user;
     } else {
-      return '没有该用户';
+      return "没有该用户";
     }
   }
 }
@@ -87,3 +87,45 @@ export class AppService {
 
 > 模块，将多个业务模块进行整合，比如将 user 模块和 goods 模块整合到一起，形成一个模块。
 > 这里相当于一个应用程序的根模块,我们可以看到它将AppController和AppService都通过@Module进行了一个注入
+
+## 集成swagger
+
+[Doc](https://docs.nestjs.com/openapi/introduction)
+
+1. 安装依赖
+
+```bash
+npm install --save @nestjs/swagger
+
+```
+
+2. 注册
+
+```ts
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+async function bootstrap() {
+  // ... other code
+  const app = await NestFactory.create(AppModule);
+  const config = new DocumentBuilder()
+    .setTitle("Cats example")
+    .setDescription("The cats API description")
+    .setVersion("1.0")
+    .addTag("cats")
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("api", app, document);
+  // ... other code
+}
+```
+
+3. 启动
+
+```bash
+npm start
+```
+
+4. 访问 http://localhost:3000/api
+
+![](https://docs.nestjs.com/assets/swagger1.png)
+
+> 查看和下载 json 则需要访问 http://localhost:3000/api-json
